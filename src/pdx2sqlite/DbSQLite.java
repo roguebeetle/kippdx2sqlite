@@ -6,6 +6,7 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +21,6 @@ public class DbSQLite {
     //Глобальные структуры и переменные
     private List<String> AddressData = new ArrayList<>();
     private List<String> Data = new ArrayList<>();
-    private List<String> ClearAddressData = new ArrayList<>();
-    private List<String> ClearData = new ArrayList<>();
     String url = "jdbc:postgresql://127.0.0.1/kip";
 
     Properties props = new Properties();
@@ -53,140 +52,25 @@ public class DbSQLite {
         System.out.println("Таблицы пошли по пизде");
     }
 
+    //-----------------------
     void fillNill() {
-        System.out.println("Начало очистки");
-        for (int i = 0; i <= Data.size() - 2; i++) {
-            if (Data.get(i) == null) {
-                System.out.println("Ячейка: " + i + " содержит нихуя: ");
-                Data.set(i, "0");
-                System.out.println("Ячейка: " + i + " теперь содержит ");
-            }
-        }
-        System.out.println("Конец очистки");
-    }
-
-    void createSQLiteTables() {
-        props.setProperty("user", "mizgir");
-        props.setProperty("password", "mizgir");
-        props.setProperty("ssl", "false");
-
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection(url, props);
-            System.out.println("Создание таблиц PostgreSQL");
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:kip.db");
+            c.setAutoCommit(false);
+            System.out.println("Чистим SQLite");
             stmt = c.createStatement();
-            String sql = "CREATE TABLE objects " +
-                    "id INT PRIMARY KEY NOT NULL," +
-                    " N_dinam TEXT, " +
-                    " Adres_Doma TEXT, " +
-                    " Num_Doma TEXT, " +
-                    " Num_korp TEXT, " +
-                    " Num_Jeu TEXT, " +
-                    " Sistema TEXT, " +
-                    " IMG_GVS TEXT, " +
-                    " IMG_OT TEXT, " +
-                    " a_snyat TEXT, " +
-                    " a_otvezen TEXT, " +
-                    " a_Privesen TEXT, " +
-                    " a_Postavlen TEXT, " +
-                    " Marka_Pribor TEXT, " +
-                    " Naim_Podr TEXT, " +
-                    " Data_Vipuska_IVB TEXT, " +
-                    " Data_Ustanovki TEXT, " +
-                    " Shema TEXT, " +
-                    " Num_IVB TEXT, " +
-                    " Typ_PPR TEXT, " +
-                    " Num_PPR1 TEXT, " +
-                    " Num_PPR2 TEXT, " +
-                    " Num_PPR3 TEXT, " +
-                    " Diam_1 TEXT, " +
-                    " Diam_2 TEXT, " +
-                    " Diam_3 TEXT, " +
-                    " TYP_TSP_GVS TEXT, " +
-                    " TYP_TSP_OT TEXT, " +
-                    " Num_TSP1 TEXT, " +
-                    " Num_TSP2 TEXT, " +
-                    " Num_TSP3 TEXT, " +
-                    " XV_prog TEXT, " +
-                    " prog_XV TEXT, " +
-                    " Num_TSP4 TEXT, " +
-                    " Num_TSP5 TEXT, " +
-                    " Diap_GVS TEXT, " +
-                    " Diap_OT TEXT, " +
-                    " Status_GVS TEXT, " +
-                    " Status_OT TEXT, " +
-                    " Data_Post_Uch_GVS TEXT, " +
-                    " Data_Sn_Uch_GVS TEXT, " +
-                    " Data_Post_Uch_OT TEXT, " +
-                    " Data_Sn_Uch_OT TEXT, " +
-                    " Data_Poverki_IVB TEXT, " +
-                    " Data_Sled_Poverki_IVB TEXT, " +
-                    " Data_Poverki_RSM TEXT, " +
-                    " Data_Sled_Poverki_RSM TEXT, " +
-                    " Data_SN_Poverka TEXT, " +
-                    " Data_Privoza_S_Poverki TEXT, " +
-                    " Naim_poveritelya TEXT, " +
-                    " Status_Poverki TEXT, " +
-                    " Num_REG_OT TEXT, " +
-                    " Num_REG_GVS TEXT, " +
-                    " Ploschad_Doma TEXT, " +
-                    " Kol_Jilcov TEXT, " +
-                    " Kol_kvartir TEXT, " +
-                    " Kommentarii TEXT, " +
-                    " Select_Dom TEXT, " +
-                    " Pr_Q_GVS TEXT, " +
-                    " Pr_V_GVS TEXT, " +
-                    " Pr_Q_OT TEXT, " +
-                    " Pr_V_OT TEXT, " +
-                    " POVERKA_TSP_GVS TEXT, " +
-                    " SL_POVERKA_TSP_GVS TEXT, " +
-                    " POVERKA_TSP_OT TEXT, " +
-                    " SL_POVERKA_TSP_OT TEXT, " +
-                    " Mgnov_proekt_GVS TEXT, " +
-                    " Mgnov_proekt_OT TEXT, " +
-                    " Mgnov_BERN_GVS TEXT, " +
-                    " Mgnov_BERN_OT TEXT, " +
-                    " Num_INVENT TEXT, " +
-                    " Period_IVB TEXT, " +
-                    " Period_TSPGVS TEXT, " +
-                    " Period_TSPOT TEXT, " +
-                    " Period_RSM TEXT, " +
-                    " Etalon TEXT, " +
-                    " Seriya TEXT, " +
-                    " Tepov_Nagr TEXT, " +
-                    " Teplov_Nagr1 TEXT, " +
-                    " SIM1 TEXT, " +
-                    " SIM2 TEXT, " +
-                    " SIM3 TEXT)";
+            String sql = "DELETE FROM data WHERE date='null'";
             stmt.executeUpdate(sql);
-            String sql2 = "CREATE TABLE data " +
-                    "(_id INT PRIMARY KEY  NOT NULL," +
-                    " ivb            TEXT NOT NULL, " +
-                    " system         TEXT NOT NULL, " +
-                    " date           DATE, " +
-                    " time           TEXT NOT NULL, " +
-                    " q1             TEXT NOT NULL, " +
-                    " q2             TEXT, " +
-                    " v1             TEXT NOT NULL, " +
-                    " v2             TEXT, " +
-                    " g1             TEXT NOT NULL, " +
-                    " g2             TEXT, " +
-                    " t1             TEXT NOT NULL, " +
-                    " t2             TEXT, " +
-                    " t3             TEXT, " +
-                    " tw             TEXT)";
-            stmt.executeUpdate(sql2);
-
             stmt.close();
+            c.commit();
             c.close();
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Таблицы PostgreSQL создана");
-    }                     // Создание таблиц Objects(Приборы) Data(Показания) в базе SQLite
-
+        System.out.println("Почистили SQLite");
+    }//-----------------------
     void cloneSQLiteAddressDataToList() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -371,7 +255,6 @@ public class DbSQLite {
         }
         System.out.println("Копирование объектов в память завершено.");
     }           // Копирование таблицы с описанием приборов из базы Paradox во временный массив
-
     void cloneSQLiteDataToList() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -421,7 +304,6 @@ public class DbSQLite {
         }
         System.out.println("Показания скопированы в память.");
     }                  // Копирование таблицы с показаниями приборов из базы Paradox во временный массив
-
     void createPSQLTables() {
         props.setProperty("user", "mizgir");
         props.setProperty("password", "mizgir");
@@ -521,7 +403,7 @@ public class DbSQLite {
                     "(_id INT PRIMARY KEY  NOT NULL," +
                     " ivb            TEXT NOT NULL, " +
                     " system         TEXT NOT NULL, " +
-                    " date           TEXT NOT NULL, " +
+                    " date           DATE NOT NULL, " +
                     " time           TEXT NOT NULL, " +
                     " q1             TEXT NOT NULL, " +
                     " q2             TEXT," +
@@ -543,7 +425,6 @@ public class DbSQLite {
         }
         System.out.println("Таблицы в PostgreSQL созданы");
     }                     // Создание таблиц Objects(Приборы) Data(Показания) в базе SQLite
-
     void cloneAddressDataToPSQLObjects() {
         props.setProperty("user", "mizgir");
         props.setProperty("password", "mizgir");
@@ -667,7 +548,6 @@ public class DbSQLite {
         }
         System.out.println("Вставка объектов в PostgreSQL БД завершена.");
     }         // Копирование таблицы с описанием приборов из временного массива в базу SQLite
-
     void cloneDataListToPSQLObjects() {
         props.setProperty("user", "mizgir");
         props.setProperty("password", "mizgir");

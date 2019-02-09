@@ -21,9 +21,9 @@ public class Main {
         db.cloneAddressDataToSQLiteObjects();
         db.cloneParadoxDataToList();
         db.cloneDataListToSQLiteObjects();
+        dbsql.fillNill();
         dbsql.cloneSQLiteAddressDataToList();
         dbsql.cloneSQLiteDataToList();
-        dbsql.fillNill();
         dbsql.clearTable();
         dbsql.createPSQLTables();
         dbsql.cloneAddressDataToPSQLObjects();
